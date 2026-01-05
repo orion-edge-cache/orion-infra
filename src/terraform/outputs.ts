@@ -14,11 +14,14 @@ import { TerraformOutput } from '../types.js';
  * This is needed because the .terraform directory may not exist or
  * may be configured with a different backend path.
  */
-function ensureInitialized(): void {
+function ensureInitialized(onInit?: () => void): void {
   const terraformDir = path.join(IAC_DIR, '.terraform');
 
   // Check if terraform is initialized
   if (!fs.existsSync(terraformDir)) {
+    // Signal that initialization is starting
+    onInit?.();
+
     // Ensure config directory exists
     if (!fs.existsSync(ORION_CONFIG_DIR)) {
       fs.mkdirSync(ORION_CONFIG_DIR, { recursive: true });
@@ -32,9 +35,9 @@ function ensureInitialized(): void {
   }
 }
 
-export function getTerraformOutputs(): TerraformOutput {
+export function getTerraformOutputs(onInit?: () => void): TerraformOutput {
   try {
-    ensureInitialized();
+    ensureInitialized(onInit);
     const output = execSync(`cd ${IAC_DIR} && terraform output -json`, {
       stdio: 'pipe',
     });
