@@ -36,15 +36,56 @@ export interface TerraformOutput {
   instance_id: { value: string };
   compute_service: {
     value: {
+      domain_name: string;
       id: string;
+      name: string;
       backend_domain: string;
       backend_port: number;
       backend_protocol: string;
+      backend_host_override: string;
     };
   };
-  kinesis_stream?: { value: { name: string } };
-  aws_region?: { value: string };
+  cdn_service: {
+    value: {
+      domain_name: string;
+      id: string;
+      name: string;
+    };
+  };
+  configstore: {
+    value: {
+      name: string;
+      id: string;
+    };
+  };
+  secretstore: {
+    value: {
+      name: string;
+      id: string;
+    };
+  };
+  kinesis_stream: {
+    value: {
+      name: string;
+      arn: string;
+    };
+  };
+  s3_bucket: {
+    value: {
+      arn: string;
+      name: string;
+      bucket_domain_name: string;
+    };
+  };
+  iam_role: {
+    value: {
+      arn: string;
+      name: string;
+    };
+  };
+  // Optional fields used by compute templates
   logging_endpoint?: { value: string };
+  aws_region?: { value: string };
 }
 
 export interface ProgressEvent {
