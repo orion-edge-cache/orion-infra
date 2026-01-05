@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "name": "orion",
+  "defaults": {
+    "maxAge": 60,
+    "staleWhileRevalidate": 0,
+    "staleIfError": 0
+  },
+  "rules": [],
+  "invalidations": {}
+}

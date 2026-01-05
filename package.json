@@ -1,0 +1,35 @@
+{
+  "name": "@orion/infra",
+  "version": "1.0.0",
+  "description": "Infrastructure provisioning for Orion GraphQL Edge Cache",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "iac",
+    "edge"
+  ],
+  "keywords": ["graphql", "cache", "fastly", "terraform", "aws"],
+  "author": "Preston Macy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orion-edge-cache/orion-infra.git"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

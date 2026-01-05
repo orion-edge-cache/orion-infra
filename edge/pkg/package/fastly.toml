@@ -1,0 +1,32 @@
+# This file describes a Fastly Compute package. To learn more visit:
+# https://www.fastly.com/documentation/reference/compute/fastly-toml
+
+authors = []
+description = "A basic starter kit that demonstrates routing, simple synthetic responses and overriding caching rules."
+language = "javascript"
+manifest_version = 3
+name = "Orion"
+service_id = "GIDXIGeMl86Dfe2WjiUdKd"
+[scripts]
+  build = "$(npm prefix)/node_modules/.bin/js-compute-runtime src/index.ts bin/main.wasm"
+
+[local_server]
+  host = "127.0.0.1"
+  port = 7676
+  [local_server.backends]
+    [local_server.backends.graphql-server]
+      url = "http://ec2-54-165-253-142.compute-1.amazonaws.com"
+
+   [local_server.env_vars]
+    FASTLY_COMPUTE_CUSTOM_DOMAIN = "ec2-54-165-253-142.compute-1.amazonaws.com"
+                 
+[setup.backends.graphql-server]
+  description = "GraphQL Origin Server"
+  addess = "ec2-54-165-253-142.compute-1.amazonaws.com"
+  port = 80
+
+
+
+
+
+
