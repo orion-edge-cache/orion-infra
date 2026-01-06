@@ -22,7 +22,13 @@
     "iac",
     "edge"
   ],
-  "keywords": ["graphql", "cache", "fastly", "terraform", "aws"],
+  "keywords": [
+    "graphql",
+    "cache",
+    "fastly",
+    "terraform",
+    "aws"
+  ],
   "author": "Preston Macy",
   "license": "MIT",
   "repository": {
@@ -32,5 +38,8 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "execa": "^9.6.1"
   }
 }
