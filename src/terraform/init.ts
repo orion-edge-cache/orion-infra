@@ -3,10 +3,10 @@
  * Merged from CLI and server deployment code
  */
 
-import { execSync } from 'child_process';
 import fs from 'fs';
 import { IAC_DIR, TFSTATE_PATH, ORION_CONFIG_DIR } from '../config.js';
 import { ProgressCallback } from '../types.js';
+import { exec } from '../exec.js';
 
 export async function initTerraform(onProgress?: ProgressCallback): Promise<void> {
   onProgress?.({
@@ -21,10 +21,15 @@ export async function initTerraform(onProgress?: ProgressCallback): Promise<void
   }
 
   try {
-    const backendConfigArg = `-backend-config="path=${TFSTATE_PATH}"`;
-    execSync(`cd ${IAC_DIR} && terraform init -reconfigure ${backendConfigArg}`, {
-      stdio: 'pipe',
-      env: { ...process.env },
+    await exec('terraform', [
+      'init',
+      '-reconfigure',
+      `-backend-config=path=${TFSTATE_PATH}`,
+    ], {
+      cwd: IAC_DIR,
+      onProgress,
+      progressStep: 'init',
+      progressPercent: 15,
     });
 
     onProgress?.({

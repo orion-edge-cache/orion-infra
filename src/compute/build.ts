@@ -3,9 +3,9 @@
  * Merged from CLI and server deployment code
  */
 
-import { execSync } from 'child_process';
 import { EDGE_DIR } from '../config.js';
 import { ProgressCallback } from '../types.js';
+import { exec } from '../exec.js';
 
 export async function buildCompute(onProgress?: ProgressCallback): Promise<void> {
   onProgress?.({
@@ -15,9 +15,11 @@ export async function buildCompute(onProgress?: ProgressCallback): Promise<void>
   });
 
   try {
-    execSync('npm ci', {
+    await exec('npm', ['ci'], {
       cwd: EDGE_DIR,
-      stdio: 'pipe',
+      onProgress,
+      progressStep: 'build',
+      progressPercent: 74,
     });
   } catch (error) {
     throw new Error(`Fastly dependency install failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -30,9 +32,11 @@ export async function buildCompute(onProgress?: ProgressCallback): Promise<void>
   });
 
   try {
-    execSync('npm run build', {
+    await exec('npm', ['run', 'build'], {
       cwd: EDGE_DIR,
-      stdio: 'pipe',
+      onProgress,
+      progressStep: 'build',
+      progressPercent: 82,
     });
 
     onProgress?.({

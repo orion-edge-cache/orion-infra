@@ -3,9 +3,9 @@
  * Merged from CLI and server deployment code
  */
 
-import { execSync } from 'child_process';
 import { EDGE_DIR } from '../config.js';
 import { ProgressCallback } from '../types.js';
+import { exec } from '../exec.js';
 
 export async function deployCompute(
   fastlyToken: string,
@@ -18,10 +18,12 @@ export async function deployCompute(
   });
 
   try {
-    execSync(`fastly compute publish --token ${fastlyToken}`, {
+    await exec('fastly', ['compute', 'publish', '--token', fastlyToken], {
       cwd: EDGE_DIR,
-      stdio: 'pipe',
-      env: { ...process.env, FASTLY_API_KEY: fastlyToken },
+      env: { FASTLY_API_KEY: fastlyToken },
+      onProgress,
+      progressStep: 'deploy',
+      progressPercent: 92,
     });
 
     onProgress?.({

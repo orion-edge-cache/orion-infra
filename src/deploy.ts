@@ -45,7 +45,7 @@ export async function deployInfrastructure(
   await initTerraform(onProgress);
   await applyTerraform(config, onProgress);
 
-  const outputs = getTerraformOutputs();
+  const outputs = await getTerraformOutputs();
   await processComputeTemplates(outputs, onProgress);
 
   await buildCompute(onProgress);
