@@ -6,5 +6,9 @@ iac/tfplan
 edge/node_modules/
 edge/bin/
 edge/pkg/*.tar.gz
+edge/src/*.js
+edge/src/*.js.map
+edge/src/*.d.ts
+edge/src/*.d.ts.map
 .env
 .DS_Store
