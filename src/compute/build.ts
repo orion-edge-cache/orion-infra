@@ -10,8 +10,23 @@ import { ProgressCallback } from '../types.js';
 export async function buildCompute(onProgress?: ProgressCallback): Promise<void> {
   onProgress?.({
     step: 'build',
+    message: 'Installing edge compute dependencies...',
+    progress: 72,
+  });
+
+  try {
+    execSync('npm ci', {
+      cwd: EDGE_DIR,
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    throw new Error(`Fastly dependency install failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  onProgress?.({
+    step: 'build',
     message: 'Building Fastly Compute service...',
-    progress: 75,
+    progress: 78,
   });
 
   try {
