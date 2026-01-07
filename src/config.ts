@@ -20,5 +20,5 @@ export const DEFAULT_CONFIG_PATH = path.join(EDGE_DIR, 'src/defaultConfig.json')
 // User config paths
 export const ORION_CONFIG_DIR = path.join(os.homedir(), '.config/orion');
 export const TFSTATE_PATH = path.join(ORION_CONFIG_DIR, 'terraform.tfstate');
-export const CREDENTIALS_PATH = path.join(ORION_CONFIG_DIR, 'credentials.json');
+export const DEPLOYMENT_CONFIG_PATH = path.join(ORION_CONFIG_DIR, 'deployment-config.json');
 export const BACKEND_URL_PATH = path.join(ORION_CONFIG_DIR, 'backend-url');

@@ -19,8 +19,10 @@
   },
   "files": [
     "dist",
+    "src",
     "iac",
-    "edge"
+    "edge",
+    "tsconfig.json"
   ],
   "keywords": [
     "graphql",
