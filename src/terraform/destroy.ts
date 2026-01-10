@@ -29,6 +29,7 @@ export async function destroyTerraform(
   await exec('terraform', [
     'destroy',
     '-auto-approve',
+    '-no-color',
     '-var=compute_backend_domain=destroy.local',
     '-var=compute_backend_protocol=https',
     '-var=compute_backend_port=443',

@@ -40,6 +40,7 @@ export async function applyTerraform(
     await exec('terraform', [
       'apply',
       '-auto-approve',
+      '-no-color',
       `-var=compute_backend_domain=${hostname}`,
       `-var=compute_backend_port=${port}`,
       `-var=compute_backend_protocol=${protocol}`,
