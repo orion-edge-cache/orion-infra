@@ -101,17 +101,39 @@ async function handleRequest(event: FetchEvent) {
     body: requestBody,
   });
 
+  kinesisLogger.log(
+    JSON.stringify({
+      title: "Fastly Compute GraphQL Request Object",
+      timestamp,
+      url: graphqlRequest.url,
+      method: graphqlRequest.method,
+      backend: `${configProtocol}://${configDomain}`,
+      body: graphqlRequest.body,
+    }),
+  );
+
   const response = await fetch(graphqlRequest);
+  const responseBody = await response.text();
+
+  kinesisLogger.log(
+    JSON.stringify({
+      title: "Fastly Compute Server Response Object",
+      timestamp,
+      url: response.url,
+      status: response.status,
+      statusText: response.statusText,
+      body: responseBody,
+    }),
+  );
 
   if (response.status !== 200) {
-    return new Response(await response.text(), {
+    return new Response(responseBody, {
       status: response.status,
       statusText: response.statusText,
     });
   }
 
   // Parse response and extract entities
-  const responseBody = await response.text();
   let entities = new Set<string>();
   let surrogateKey = "";
 

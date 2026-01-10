@@ -24,6 +24,7 @@ export async function initTerraform(onProgress?: ProgressCallback): Promise<void
     await exec('terraform', [
       'init',
       '-reconfigure',
+      '-no-color',
       `-backend-config=path=${TFSTATE_PATH}`,
     ], {
       cwd: IAC_DIR,
