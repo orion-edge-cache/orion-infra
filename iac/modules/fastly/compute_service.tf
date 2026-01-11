@@ -22,10 +22,13 @@ resource "fastly_service_compute" "orion_compute" {
   }
 
   backend {
-    address       = var.compute_backend_domain
-    name          = "graphql-server"
-    port          = var.compute_backend_port
-    override_host = var.compute_backend_host_override
+    address           = var.compute_backend_domain
+    name              = "graphql-server"
+    port              = var.compute_backend_port
+    override_host     = var.compute_backend_host_override
+    use_ssl           = true
+    ssl_cert_hostname = var.compute_backend_domain
+    ssl_sni_hostname  = var.compute_backend_domain
   }
 
   backend {
