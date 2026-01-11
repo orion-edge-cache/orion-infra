@@ -6,7 +6,7 @@ description = "A basic starter kit that demonstrates routing, simple synthetic r
 language = "javascript"
 manifest_version = 3
 name = "Orion"
-service_id = "oOR3SAI3SLEMATAkI9WtNd"
+service_id = "4U723NQtCxqckaTL4fb6tr"
 [scripts]
   build = "$(npm prefix)/node_modules/.bin/js-compute-runtime src/index.ts bin/main.wasm"
 
@@ -15,18 +15,15 @@ service_id = "oOR3SAI3SLEMATAkI9WtNd"
   port = 7676
   [local_server.backends]
     [local_server.backends.graphql-server]
-      url = "http://ec2-54-165-253-142.compute-1.amazonaws.com"
+      url = "https://pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
 
    [local_server.env_vars]
-    FASTLY_COMPUTE_CUSTOM_DOMAIN = "ec2-54-165-253-142.compute-1.amazonaws.com"
-                 
+    FASTLY_COMPUTE_CUSTOM_DOMAIN = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
+
 [setup.backends.graphql-server]
   description = "GraphQL Origin Server"
-  addess = "vfa102.website"
-  port = 80
-
-
-
-
-
-
+  address = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
+  port = 443
+  use_ssl = true
+  ssl_cert_hostname = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
+  ssl_sni_hostname = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"

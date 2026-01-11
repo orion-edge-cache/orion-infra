@@ -22,11 +22,5 @@ service_id = "{{compute_service_id}}"
                  
 [setup.backends.graphql-server]
   description = "GraphQL Origin Server"
-  addess = "{{backend_domain}}"
+  address = "{{backend_domain}}"
   port = {{backend_port}}
-
-
-
-
-
-

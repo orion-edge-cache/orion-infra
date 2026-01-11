@@ -67,13 +67,16 @@ async function handleRequest(event: FetchEvent) {
   // Log request
   kinesisLogger.log(
     JSON.stringify({
-      title: "Fastly Compute Request",
+      event: "debug",
+      message: `[${operationType}] Incoming request: ${request.method} ${request.url}`,
       timestamp,
-      url: request.url,
-      method: request.method,
-      backend: `${configProtocol}://${configDomain}`,
-      operationType,
-      isMutation: isMutationRequest,
+      data: {
+        url: request.url,
+        method: request.method,
+        backend: `${configProtocol}://${configDomain}`,
+        operationType,
+        isMutation: isMutationRequest,
+      },
     }),
   );
 
@@ -103,12 +106,15 @@ async function handleRequest(event: FetchEvent) {
 
   kinesisLogger.log(
     JSON.stringify({
-      title: "Fastly Compute GraphQL Request Object",
+      event: "debug",
+      message: `Forwarding to origin: POST /graphql`,
       timestamp,
-      url: graphqlRequest.url,
-      method: graphqlRequest.method,
-      backend: `${configProtocol}://${configDomain}`,
-      body: graphqlRequest.body,
+      data: {
+        url: graphqlRequest.url,
+        method: graphqlRequest.method,
+        backend: `${configProtocol}://${configDomain}`,
+        body: requestBody,
+      },
     }),
   );
 
@@ -117,12 +123,15 @@ async function handleRequest(event: FetchEvent) {
 
   kinesisLogger.log(
     JSON.stringify({
-      title: "Fastly Compute Server Response Object",
+      event: "debug",
+      message: `Origin response: ${response.status} ${response.statusText}`,
       timestamp,
-      url: response.url,
-      status: response.status,
-      statusText: response.statusText,
-      body: responseBody,
+      data: {
+        url: response.url,
+        status: response.status,
+        statusText: response.statusText,
+        body: responseBody,
+      },
     }),
   );
 

@@ -30,12 +30,12 @@ import { getCacheHeaders, getInvalidationTargets } from "./config.js";
 addEventListener("fetch", (event) => event.respondWith(handleRequest(event)));
 
 async function handleRequest(event: FetchEvent) {
-  const secrets = new SecretStore("orion_secretstore_35a18af5");
-  const config = new ConfigStore("orion_configstore_35a18af5");
+  const secrets = new SecretStore("orion_secretstore_647d9169");
+  const config = new ConfigStore("orion_configstore_647d9169");
   const configDomain =
-    config.get("compute_backend_domain") || "vfa102.website";
-  const configProtocol =
-    config.get("compute_backend_protocol") || "http";
+    config.get("compute_backend_domain") ||
+    "xmgekzp575.execute-api.us-east-1.amazonaws.com";
+  const configProtocol = config.get("compute_backend_protocol") || "https";
   const configHostOverride = config.get("compute_backend_host_override") || "";
 
   const request = event.request;
@@ -67,13 +67,16 @@ async function handleRequest(event: FetchEvent) {
   // Log request
   kinesisLogger.log(
     JSON.stringify({
-      title: "Fastly Compute Request",
+      event: "debug",
+      message: `[${operationType}] Incoming request: ${request.method} ${request.url}`,
       timestamp,
-      url: request.url,
-      method: request.method,
-      backend: `${configProtocol}://${configDomain}`,
-      operationType,
-      isMutation: isMutationRequest,
+      data: {
+        url: request.url,
+        method: request.method,
+        backend: `${configProtocol}://${configDomain}`,
+        operationType,
+        isMutation: isMutationRequest,
+      },
     }),
   );
 
@@ -101,17 +104,54 @@ async function handleRequest(event: FetchEvent) {
     body: requestBody,
   });
 
+  kinesisLogger.log(
+    JSON.stringify({
+      event: "debug",
+      message: `Forwarding to origin: POST /graphql`,
+      timestamp,
+      data: {
+        url: graphqlRequest.url,
+        method: graphqlRequest.method,
+        configUrl: `${configProtocol}://${configDomain}`,
+        backend: "graphql-server",
+        body: requestBody,
+        headers: Object.fromEntries(graphqlRequest.headers.entries()),
+      },
+    }),
+  );
+
   const response = await fetch(graphqlRequest);
+  const responseBody = await response.text();
+
+  kinesisLogger.log(
+    JSON.stringify({
+      event: "debug",
+      message: `Origin response: ${response.status} ${response.statusText}`,
+      timestamp,
+      data: {
+        url: response.url,
+        status: response.status,
+        statusText: response.statusText,
+        body: responseBody,
+      },
+    }),
+  );
 
   if (response.status !== 200) {
-    return new Response(await response.text(), {
+    kinesisLogger.log(
+      JSON.stringify({
+        event: "debug",
+        message: `Response status is not 200`,
+        timestamp,
+      }),
+    );
+    return new Response(responseBody, {
       status: response.status,
       statusText: response.statusText,
     });
   }
 
   // Parse response and extract entities
-  const responseBody = await response.text();
   let entities = new Set<string>();
   let surrogateKey = "";
 
@@ -197,8 +237,8 @@ async function handleRequest(event: FetchEvent) {
 
 async function autoPurge(keys: string[]): Promise<void> {
   try {
-    const secrets = new SecretStore("orion_secretstore_35a18af5");
-    const config = new ConfigStore("orion_configstore_35a18af5");
+    const secrets = new SecretStore("orion_secretstore_647d9169");
+    const config = new ConfigStore("orion_configstore_647d9169");
 
     const serviceId = config.get("VCL_SERVICE_ID");
     const apiKeySecret = await secrets.get("FASTLY_API_KEY");
