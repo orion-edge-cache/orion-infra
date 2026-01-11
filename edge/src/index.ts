@@ -30,11 +30,11 @@ import { getCacheHeaders, getInvalidationTargets } from "./config.js";
 addEventListener("fetch", (event) => event.respondWith(handleRequest(event)));
 
 async function handleRequest(event: FetchEvent) {
-  const secrets = new SecretStore("orion_secretstore_647d9169");
-  const config = new ConfigStore("orion_configstore_647d9169");
+  const secrets = new SecretStore("orion_secretstore_9090f7b8");
+  const config = new ConfigStore("orion_configstore_9090f7b8");
   const configDomain =
     config.get("compute_backend_domain") ||
-    "xmgekzp575.execute-api.us-east-1.amazonaws.com";
+    "3a5izbdkp7.execute-api.us-east-1.amazonaws.com";
   const configProtocol = config.get("compute_backend_protocol") || "https";
   const configHostOverride = config.get("compute_backend_host_override") || "";
 
@@ -138,13 +138,38 @@ async function handleRequest(event: FetchEvent) {
   );
 
   if (response.status !== 200) {
+    // Log 4xx/5xx errors explicitly
+    const is5xx = response.status >= 500;
+    const errorLevel = is5xx ? "error" : "warn";
+
+    // Try to extract error message from response body
+    let errorMessage = response.statusText;
+    try {
+      const errorData = JSON.parse(responseBody);
+      if (errorData.errors?.[0]?.message) {
+        errorMessage = errorData.errors[0].message;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // Response body isn't JSON, use statusText
+    }
+
     kinesisLogger.log(
       JSON.stringify({
-        event: "debug",
-        message: `Response status is not 200`,
+        event: "error",
+        level: errorLevel,
+        message: `[${response.status}] ${errorMessage}`,
         timestamp,
+        data: {
+          status: response.status,
+          statusText: response.statusText,
+          body: responseBody,
+          operationType,
+        },
       }),
     );
+
     return new Response(responseBody, {
       status: response.status,
       statusText: response.statusText,
@@ -237,8 +262,8 @@ async function handleRequest(event: FetchEvent) {
 
 async function autoPurge(keys: string[]): Promise<void> {
   try {
-    const secrets = new SecretStore("orion_secretstore_647d9169");
-    const config = new ConfigStore("orion_configstore_647d9169");
+    const secrets = new SecretStore("orion_secretstore_9090f7b8");
+    const config = new ConfigStore("orion_configstore_9090f7b8");
 
     const serviceId = config.get("VCL_SERVICE_ID");
     const apiKeySecret = await secrets.get("FASTLY_API_KEY");

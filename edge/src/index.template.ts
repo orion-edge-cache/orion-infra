@@ -136,6 +136,38 @@ async function handleRequest(event: FetchEvent) {
   );
 
   if (response.status !== 200) {
+    // Log 4xx/5xx errors explicitly
+    const is5xx = response.status >= 500;
+    const errorLevel = is5xx ? "error" : "warn";
+
+    // Try to extract error message from response body
+    let errorMessage = response.statusText;
+    try {
+      const errorData = JSON.parse(responseBody);
+      if (errorData.errors?.[0]?.message) {
+        errorMessage = errorData.errors[0].message;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // Response body isn't JSON, use statusText
+    }
+
+    kinesisLogger.log(
+      JSON.stringify({
+        event: "error",
+        level: errorLevel,
+        message: `[${response.status}] ${errorMessage}`,
+        timestamp,
+        data: {
+          status: response.status,
+          statusText: response.statusText,
+          body: responseBody,
+          operationType,
+        },
+      }),
+    );
+
     return new Response(responseBody, {
       status: response.status,
       statusText: response.statusText,

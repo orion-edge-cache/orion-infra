@@ -6,7 +6,7 @@
 // High-level API
 export { deployInfrastructure } from './deploy.js';
 export { destroyInfrastructure } from './destroy.js';
-export { cleanupAfterDestroy } from './cleanup.js';
+export { cleanupAfterDestroy, resetConfigToDefaults } from './cleanup.js';
 
 // Low-level Terraform API
 export {

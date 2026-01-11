@@ -6,7 +6,7 @@ description = "A basic starter kit that demonstrates routing, simple synthetic r
 language = "javascript"
 manifest_version = 3
 name = "Orion"
-service_id = "4U723NQtCxqckaTL4fb6tr"
+service_id = "92b3mTmHFX7iwhlsjzmosj"
 [scripts]
   build = "$(npm prefix)/node_modules/.bin/js-compute-runtime src/index.ts bin/main.wasm"
 
@@ -22,8 +22,8 @@ service_id = "4U723NQtCxqckaTL4fb6tr"
 
 [setup.backends.graphql-server]
   description = "GraphQL Origin Server"
-  address = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
+  address = "3a5izbdkp7.execute-api.us-east-1.amazonaws.com"
   port = 443
   use_ssl = true
-  ssl_cert_hostname = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
-  ssl_sni_hostname = "pcq8dgfxoi.execute-api.us-east-1.amazonaws.com"
+  ssl_cert_hostname = "3a5izbdkp7.execute-api.us-east-1.amazonaws.com"
+  ssl_sni_hostname = "3a5izbdkp7.execute-api.us-east-1.amazonaws.com"

@@ -24,3 +24,6 @@ service_id = "{{compute_service_id}}"
   description = "GraphQL Origin Server"
   address = "{{backend_domain}}"
   port = {{backend_port}}
+  use_ssl = true
+  ssl_cert_hostname = "{{backend_domain}}"
+  ssl_sni_hostname = "{{backend_domain}}"
