@@ -13,9 +13,11 @@ export {
   initTerraform,
   applyTerraform,
   destroyTerraform,
+  planDestroyTerraform,
   deleteTfState,
   getTerraformOutputs,
   checkTfStateExists,
+  type DestroyPlanResult,
 } from './terraform/index.js';
 
 // Low-level Compute API
