@@ -224,6 +224,14 @@ export function getCacheHeaders(entityTypes: Set<string>, isMutation: boolean): 
   }
 
   // Build Surrogate-Control header (for CDN)
+  // Private scope should not be cached by CDN - only browser can cache
+  if (scope === 'private') {
+    return {
+      cacheControl: cacheControlParts.join(", "),
+      surrogateControl: "no-store",
+    };
+  }
+
   const surrogateControlParts: string[] = [];
   surrogateControlParts.push(`max-age=${minMaxAge}`);
 
