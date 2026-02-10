@@ -20,10 +20,6 @@ resource "fastly_service_dynamic_snippet_content" "recv_logic" {
                     }
                     return(pass);
                 }
-                if (req.method == "GET" && req.url.path == "/health") {
-                  set req.http.X-Health-Check = "pass";
-                  return(pass);
-                }
                 if (req.http.X-GraphQL-Query) {
                     return(lookup);
                 }
