@@ -5,6 +5,9 @@ resource "fastly_service_dynamic_snippet_content" "recv_logic" {
   service_id = fastly_service_vcl.orion_cache.id
   snippet_id = each.value.snippet_id
   content    = <<-VCL
+                if (!req.http.X-Request-ID) {
+                    set req.http.X-Request-ID = uuid.version4();
+                }
                 if (req.method == "POST" && req.url.path == "/graphql") {
                     if (req.body) {
                       set req.http.X-GraphQL-Query = json.escape(req.body);
