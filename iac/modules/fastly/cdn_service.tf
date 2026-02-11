@@ -24,42 +24,6 @@ resource "fastly_service_vcl" "orion_cache" {
     ttl       = 30
   }
 
-  logging_s3 {
-    name        = "s3-logs"
-    bucket_name = var.s3_bucket_name
-    s3_iam_role = var.iam_role_arn
-    period      = 30
-    format      = <<-VCL
-    {
-       "request_id": "%%{if(req.http.x-request-id, req.http.x-request-id, "No Request ID")}V",
-       "source": "cdn",
-       "level": "info",
-       "subroutine": "deliver",
-       "timestamp": "%%{strftime(\{"%Y-%m-%dT%H:%M:%S%z"\}, time.start)}V",
-       "cdn_version": "%%{req.vcl.version}V",
-       "client_ip": "%%{req.http.Fastly-Client-IP}V",
-       "req_host": "%%{if(req.http.Fastly-Orig-Host, req.http.Fastly-Orig-Host, req.http.Host)}V",
-       "req_url": "%%{json.escape(req.url)}V",
-       "req_method": "%%{json.escape(req.method)}V",
-       "req_protocol": "%%{json.escape(req.proto)}V",
-       "req_user_agent": "%%{json.escape(req.http.User-Agent)}V",
-       "fastly_cache_state": "%%{json.escape(fastly_info.state)}V",
-       "resp_status": %%{resp.status}V,
-       "resp_response": %%{if(resp.response, "%22"+json.escape(resp.response)+"%22", "null")}V,
-       "resp_body_size": %%{resp.body_bytes_written}V,
-       "fastly_server": "%%{json.escape(server.identity)}V",
-       "fastly_is_edge": %%{if(fastly.ff.visits_this_service == 0, "true", "false")}V,
-       "req_x_health_check": "%%{if(req.http.X-Health-Check, req.http.X-Health-Check, "null"")}V",
-       "req_x_graphql_query": "%%{if(req.http.X-GraphQL-Query, req.http.X-GraphQL-Query, "null"")}V",
-       "req_x_debug_cache_reason": "%%{req.http.X-Debug-Cache-Reason}V",
-       "req_body": "%%{json.escape(req.body)}V",
-       "time_to_first_byte": "%%{time.to_first_byte}V",
-       "time_elapsed": "%%{time.elapsed.usec}V"
-    }
-    VCL
-  }
-
-
   logging_kinesis {
     name     = "kinesis-stream"
     topic    = var.kinesis_stream_name
@@ -84,8 +48,8 @@ resource "fastly_service_vcl" "orion_cache" {
        "resp_body_size": %%{resp.body_bytes_written}V,
        "fastly_server": "%%{json.escape(server.identity)}V",
        "fastly_is_edge": %%{if(fastly.ff.visits_this_service == 0, "true", "false")}V,
-       "req_x_health_check": "%%{if(req.http.X-Health-Check, req.http.X-Health-Check, "null"")}V",
-       "req_x_graphql_query": "%%{if(req.http.X-GraphQL-Query, req.http.X-GraphQL-Query, "null"")}V",
+       "req_x_health_check": "%%{if(req.http.X-Health-Check, req.http.X-Health-Check, "null")}V",
+       "req_x_graphql_query": "%%{if(req.http.X-GraphQL-Query, req.http.X-GraphQL-Query, "null")}V",
        "req_x_debug_cache_reason": "%%{req.http.X-Debug-Cache-Reason}V",
        "req_body": "%%{json.escape(req.body)}V",
        "time_to_first_byte": "%%{time.to_first_byte}V",
