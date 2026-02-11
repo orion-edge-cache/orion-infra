@@ -41,6 +41,7 @@ async function handleRequest(event: FetchEvent) {
   const request = event.request;
   const kinesisLogger = new Logger("kinesis-stream");
   const timestamp = new Date().toISOString();
+  const request_id = request.headers.get("X-Request-ID");
 
   if (
     request.headers.get("X-Health-Check") &&
@@ -48,7 +49,8 @@ async function handleRequest(event: FetchEvent) {
   ) {
     kinesisLogger.log(
       JSON.stringify({
-        service: "compute",
+        request_id,
+        source: "compute",
         event: "health check",
         message: "Health check passed",
       }),
@@ -60,7 +62,8 @@ async function handleRequest(event: FetchEvent) {
   ) {
     kinesisLogger.log(
       JSON.stringify({
-        service: "compute",
+        request_id,
+        source: "compute",
         event: "health check",
         message: "Health check failed",
       }),
@@ -93,7 +96,8 @@ async function handleRequest(event: FetchEvent) {
   // Log request
   kinesisLogger.log(
     JSON.stringify({
-      service: "compute",
+      request_id,
+      source: "compute",
       event: "debug",
       message: `[${operationType}] Incoming request: ${request.method} ${request.url}`,
       timestamp,
@@ -133,7 +137,8 @@ async function handleRequest(event: FetchEvent) {
 
   kinesisLogger.log(
     JSON.stringify({
-      service: "compute",
+      request_id,
+      source: "compute",
       event: "debug",
       message: `Forwarding to origin: POST /graphql`,
       timestamp,
@@ -151,7 +156,8 @@ async function handleRequest(event: FetchEvent) {
 
   kinesisLogger.log(
     JSON.stringify({
-      service: "compute",
+      request_id,
+      source: "compute",
       event: "debug",
       message: `Origin response: ${response.status} ${response.statusText}`,
       timestamp,
@@ -184,7 +190,8 @@ async function handleRequest(event: FetchEvent) {
 
     kinesisLogger.log(
       JSON.stringify({
-        service: "compute",
+        request_id,
+        source: "compute",
         event: "error",
         level: errorLevel,
         message: `[${response.status}] ${errorMessage}`,
@@ -251,7 +258,8 @@ async function handleRequest(event: FetchEvent) {
       responseHeaders.set("X-Purge-Keys", uniquePurgeKeys.join(" "));
       kinesisLogger.log(
         JSON.stringify({
-          service: "compute",
+          request_id,
+          source: "compute",
           event: "purge",
           timestamp,
           keys: uniquePurgeKeys,
@@ -268,7 +276,8 @@ async function handleRequest(event: FetchEvent) {
 
     kinesisLogger.log(
       JSON.stringify({
-        service: "compute",
+        request_id,
+        source: "compute",
         event: "cache",
         timestamp,
         entityCount: entities.size,

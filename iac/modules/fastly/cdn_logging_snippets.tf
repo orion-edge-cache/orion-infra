@@ -13,7 +13,7 @@ resource "fastly_service_dynamic_snippet_content" "recv_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "recv", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
@@ -29,7 +29,7 @@ resource "fastly_service_dynamic_snippet_content" "recv_logs" {
                   {""req_origin": ""} + json.escape(if(req.http.Origin, req.http.Origin, "")) + {"", "} +
                   {""req_referrer": ""} + json.escape(if(req.http.Referer, req.http.Referer, "")) + {"", "} +
                   {""req_x_graphql_query": ""} + json.escape(var.x_graphql_query) + {"", "} +
-                  {""req_is_purge": ""} + req.is_purge + {"", "} +
+                  {""req_is_purge": ""} + if(req.is_purge, "true", "false") + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
               VCL
@@ -48,10 +48,10 @@ resource "fastly_service_dynamic_snippet_content" "hash_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "hash", "} +
-                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
+                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
               VCL
@@ -70,7 +70,7 @@ resource "fastly_service_dynamic_snippet_content" "miss_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "miss", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
@@ -80,7 +80,7 @@ resource "fastly_service_dynamic_snippet_content" "miss_logs" {
                   {""bereq_url_path": "} + bereq.url.path + {", "} +
                   {""bereq_url_qs": "} + bereq.url.qs + {", "} +
                   {""bereq_url": "} + bereq.url + {", "} +
-                  {""req_backend_is_origin": "} + if(req.backend.is_origin, "true", "false") + {", "} +
+                  {""req_backend_is_origin": "} + if(req.backend.is_origin, "true", "false") + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
@@ -99,7 +99,7 @@ resource "fastly_service_dynamic_snippet_content" "hit_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "hit", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
@@ -112,7 +112,7 @@ resource "fastly_service_dynamic_snippet_content" "hit_logs" {
                   {""obj_sie": "} + obj.stale_if_error + {", "} +
                   {""obj_swr": "} + obj.stale_while_revalidate + {", "} +
                   {""obj_status": "} + obj.status + {", "} +
-                  {""obj_ttl": "} + obj.ttl + {", "} +
+                  {""obj_ttl": "} + obj.ttl + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
               VCL
@@ -131,10 +131,10 @@ resource "fastly_service_dynamic_snippet_content" "pass_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "pass", "} +
-                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
+                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
@@ -153,7 +153,7 @@ resource "fastly_service_dynamic_snippet_content" "fetch_logs" {
                 set var.log_json = 
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
-                  {""service": "cdn", "} +
+                  {""source": "cdn", "} +
                   {""level": "info", "} +
                   {""subroutine": "fetch", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
@@ -165,7 +165,7 @@ resource "fastly_service_dynamic_snippet_content" "fetch_logs" {
                   {""beresp_sie": "} + beresp.stale_if_error + {", "} +
                   {""beresp_swr": "} + beresp.stale_while_revalidate + {", "} +
                   {""beresp_status": "} + beresp.status + {", "} +
-                  {""beresp_ttl": "} + beresp.ttl + {", "} +
+                  {""beresp_ttl": "} + beresp.ttl + {"""} +
                   {"}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
