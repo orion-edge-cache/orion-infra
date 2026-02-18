@@ -54,8 +54,8 @@ resource "fastly_service_vcl" "orion_cache" {
          "req_x_graphql_query": "%%{if(req.http.X-GraphQL-Query, req.http.X-GraphQL-Query, "null")}V",
          "req_x_debug_cache_reason": "%%{req.http.X-Debug-Cache-Reason}V",
          "req_body": "%%{json.escape(req.body)}V",
-         "time_to_first_byte": "%%{time.to_first_byte}V",
-         "time_elapsed": "%%{time.elapsed.usec}V"
+         "time_to_first_byte_seconds": "%%{time.to_first_byte}V",
+         "time_elapsed_microseconds": "%%{time.elapsed.usec}V"
         } 
      }
      VCL
