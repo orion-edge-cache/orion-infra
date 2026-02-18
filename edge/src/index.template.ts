@@ -52,7 +52,9 @@ async function handleRequest(event: FetchEvent) {
         request_id,
         source: "compute",
         event: "health check",
+        timestamp,
         message: "Health check passed",
+        data: {},
       }),
     );
     return new Response("Compute Health Check passes", { status: 200 });
@@ -65,7 +67,9 @@ async function handleRequest(event: FetchEvent) {
         request_id,
         source: "compute",
         event: "health check",
+        timestamp,
         message: "Health check failed",
+        data: {},
       }),
     );
     return new Response("Compute Health Check failed", { status: 400 });
@@ -262,8 +266,11 @@ async function handleRequest(event: FetchEvent) {
           source: "compute",
           event: "purge",
           timestamp,
-          keys: uniquePurgeKeys,
-          operationName,
+          message: "Is Mutation with surrogate key",
+          data: {
+            keys: uniquePurgeKeys,
+            operationName,
+          },
         }),
       );
       await autoPurge(uniquePurgeKeys);
@@ -280,10 +287,13 @@ async function handleRequest(event: FetchEvent) {
         source: "compute",
         event: "cache",
         timestamp,
-        entityCount: entities.size,
-        entityTypes: [...entityTypes],
-        surrogateKey: surrogateKey || null,
-        cacheControl: cacheHeaders.cacheControl,
+        message: "Is Mutation without surrogate key",
+        data: {
+          entityCount: entities.size,
+          entityTypes: [...entityTypes],
+          surrogateKey: surrogateKey || null,
+          cacheControl: cacheHeaders.cacheControl,
+        },
       }),
     );
   }
