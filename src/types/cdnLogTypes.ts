@@ -1,4 +1,4 @@
-interface CdnLogBase {
+export interface CdnLogBase {
   request_id: string;
   source: "cdn";
   level: "info";
@@ -8,7 +8,7 @@ interface CdnLogBase {
 }
 
 // Recv subroutine data
-interface CdnLogRecvData {
+export interface CdnLogRecvData {
   cdn_version: string;
   req_host: string;
   req_path: string;
@@ -25,7 +25,7 @@ interface CdnLogRecvData {
 }
 
 // Miss subroutine data
-interface CdnLogMissData {
+export interface CdnLogMissData {
   bereq_method: string;
   bereq_proto: string;
   bereq_url_basename: string;
@@ -36,7 +36,7 @@ interface CdnLogMissData {
 }
 
 // Hit subroutine data
-interface CdnLogHitData {
+export interface CdnLogHitData {
   obj_age: string;
   obj_cacheable: "true" | "false";
   obj_hits: string;
@@ -50,7 +50,7 @@ interface CdnLogHitData {
 }
 
 // Fetch subroutine data
-interface CdnLogFetchData {
+export interface CdnLogFetchData {
   beresp_response: string;
   beresp_protocol: string;
   beresp_backend_host: string;
@@ -63,7 +63,7 @@ interface CdnLogFetchData {
 }
 
 // Base states
-type FastlyBaseState =
+export type FastlyBaseState =
   | "NONE"
   | "HIT"
   | "HITPASS"
@@ -75,18 +75,18 @@ type FastlyBaseState =
   | "ERROR"
   | "ERROR-LOSTHDR";
 // Background error states
-type FastlyBgErrorState = "BG-ERROR-PASS" | "BG-ERROR-RECV" | "BG-ERROR-ERROR";
+export type FastlyBgErrorState = "BG-ERROR-PASS" | "BG-ERROR-RECV" | "BG-ERROR-ERROR";
 // Suffixes
-type FastlySuffix = "-CLUSTER" | "-REFRESH" | "-WAIT";
+export type FastlySuffix = "-CLUSTER" | "-REFRESH" | "-WAIT";
 // Combined type: base state with optional suffix
-type FastlyStateWithSuffix =
+export type FastlyStateWithSuffix =
   | FastlyBaseState
   | FastlyBgErrorState
   | `${FastlyBaseState}${FastlySuffix}`
   | `${FastlyBaseState}${FastlySuffix}${FastlySuffix}`;
 export type FastlyInfoState = FastlyStateWithSuffix;
 
-interface CdnLogDeliverData {
+export interface CdnLogDeliverData {
   cdn_version: string;
   client_ip: string;
   req_host: string;
@@ -109,41 +109,41 @@ interface CdnLogDeliverData {
 }
 
 // Hash and Pass have empty data objects
-interface CdnLogHashData {}
-interface CdnLogPassData {}
+export interface CdnLogHashData {}
+export interface CdnLogPassData {}
 
 // Complete log types by subroutine
-interface CdnLogRecv extends CdnLogBase {
+export interface CdnLogRecv extends CdnLogBase {
   event: "recv";
   data: CdnLogRecvData;
 }
 
-interface CdnLogHash extends CdnLogBase {
+export interface CdnLogHash extends CdnLogBase {
   event: "hash";
   data: CdnLogHashData;
 }
 
-interface CdnLogMiss extends CdnLogBase {
+export interface CdnLogMiss extends CdnLogBase {
   event: "miss";
   data: CdnLogMissData;
 }
 
-interface CdnLogHit extends CdnLogBase {
+export interface CdnLogHit extends CdnLogBase {
   event: "hit";
   data: CdnLogHitData;
 }
 
-interface CdnLogPass extends CdnLogBase {
+export interface CdnLogPass extends CdnLogBase {
   event: "pass";
   data: CdnLogPassData;
 }
 
-interface CdnLogFetch extends CdnLogBase {
+export interface CdnLogFetch extends CdnLogBase {
   event: "fetch";
   data: CdnLogFetchData;
 }
 
-interface CdnLogDeliver extends CdnLogBase {
+export interface CdnLogDeliver extends CdnLogBase {
   event: "deliver";
   data: CdnLogDeliverData;
 }

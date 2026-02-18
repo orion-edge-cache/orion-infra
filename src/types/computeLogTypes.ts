@@ -1,5 +1,5 @@
 // Base compute log structure
-interface ComputeLogBase {
+export interface ComputeLogBase {
   request_id: string;
   source: "compute";
   event: "debug" | "error" | "health check" | "purge" | "cache";
@@ -10,14 +10,14 @@ interface ComputeLogBase {
 }
 
 // Health Check Logs (no timestamp, empty data)
-interface ComputeHealthCheckPassed extends ComputeLogBase {
+export interface ComputeHealthCheckPassed extends ComputeLogBase {
   event: "health check";
   level: "info";
   message: "Health check passed";
   data: {};
 }
 
-interface ComputeHealthCheckFailed extends ComputeLogBase {
+export interface ComputeHealthCheckFailed extends ComputeLogBase {
   event: "health check";
   level: "error";
   message: "Health check failed";
@@ -25,7 +25,7 @@ interface ComputeHealthCheckFailed extends ComputeLogBase {
 }
 
 // Debug - Incoming Request
-interface ComputeDebugIncomingRequest extends ComputeLogBase {
+export interface ComputeDebugIncomingRequest extends ComputeLogBase {
   event: "debug";
   level: "debug";
   data: {
@@ -38,7 +38,7 @@ interface ComputeDebugIncomingRequest extends ComputeLogBase {
 }
 
 // Debug - Forwarding to Origin
-interface ComputeDebugForwarding extends ComputeLogBase {
+export interface ComputeDebugForwarding extends ComputeLogBase {
   event: "debug";
   level: "debug";
   data: {
@@ -50,7 +50,7 @@ interface ComputeDebugForwarding extends ComputeLogBase {
 }
 
 // Debug - Origin Response
-interface ComputeDebugOriginResponse extends ComputeLogBase {
+export interface ComputeDebugOriginResponse extends ComputeLogBase {
   event: "debug";
   level: "debug";
   data: {
@@ -62,7 +62,7 @@ interface ComputeDebugOriginResponse extends ComputeLogBase {
 }
 
 // Error - Non-200 Response
-interface ComputeError extends ComputeLogBase {
+export interface ComputeError extends ComputeLogBase {
   event: "error";
   level: "error";
   message: string; // e.g., "[500] Internal Server Error"
@@ -76,7 +76,7 @@ interface ComputeError extends ComputeLogBase {
 }
 
 // Purge - Mutation with surrogate key
-interface ComputePurge extends ComputeLogBase {
+export interface ComputePurge extends ComputeLogBase {
   event: "purge";
   message: "Is Mutation with surrogate key";
   data: {
@@ -86,7 +86,7 @@ interface ComputePurge extends ComputeLogBase {
 }
 
 // Cache - Query (non-mutation)
-interface ComputeCache extends ComputeLogBase {
+export interface ComputeCache extends ComputeLogBase {
   event: "cache";
   message: "Is Mutation without surrogate key";
   data: {
