@@ -4,9 +4,9 @@
  */
 
 // High-level API
-export { deployInfrastructure } from './deploy.js';
-export { destroyInfrastructure } from './destroy.js';
-export { cleanupAfterDestroy, resetConfigToDefaults } from './cleanup.js';
+export { deployInfrastructure } from "./deploy.js";
+export { destroyInfrastructure } from "./destroy.js";
+export { cleanupAfterDestroy, resetConfigToDefaults } from "./cleanup.js";
 
 // Low-level Terraform API
 export {
@@ -18,14 +18,14 @@ export {
   getTerraformOutputs,
   checkTfStateExists,
   type DestroyPlanResult,
-} from './terraform/index.js';
+} from "./terraform/index.js";
 
 // Low-level Compute API
 export {
   processComputeTemplates,
   buildCompute,
   deployCompute,
-} from './compute/index.js';
+} from "./compute/index.js";
 
 // Types
 export type {
@@ -34,7 +34,8 @@ export type {
   TerraformOutput,
   ProgressEvent,
   ProgressCallback,
-} from './types.js';
+  FastlyLogEntry,
+} from "./types/index.js";
 
 // Config (for consumers who need paths)
 export {
@@ -45,4 +46,4 @@ export {
   ORION_CONFIG_DIR,
   TFSTATE_PATH,
   BACKEND_URL_PATH,
-} from './config.js';
+} from "./config.js";

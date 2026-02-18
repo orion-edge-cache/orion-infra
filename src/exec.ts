@@ -3,8 +3,8 @@
  * Replaces execSync to allow event loop to run (for spinners/progress)
  */
 
-import { execa, Options } from 'execa';
-import { ProgressCallback } from './types.js';
+import { execa, Options } from "execa";
+import { ProgressCallback } from "./types/index.js";
 
 export interface CommandExecutionOptions {
   cwd?: string;
@@ -30,13 +30,18 @@ export type ExecResult = CommandExecutionResult;
  */
 function attachProgressStreamers(
   subprocess: ReturnType<typeof execa>,
-  options: CommandExecutionOptions
+  options: CommandExecutionOptions,
 ): void {
   const { onProgress, progressStep, progressPercent } = options;
 
   const handleData = (data: Buffer) => {
     const line = data.toString().trim();
-    if (line && onProgress && progressStep !== undefined && progressPercent !== undefined) {
+    if (
+      line &&
+      onProgress &&
+      progressStep !== undefined &&
+      progressPercent !== undefined
+    ) {
       onProgress({
         step: progressStep,
         message: line,
@@ -45,8 +50,8 @@ function attachProgressStreamers(
     }
   };
 
-  subprocess.stdout?.on('data', handleData);
-  subprocess.stderr?.on('data', handleData);
+  subprocess.stdout?.on("data", handleData);
+  subprocess.stderr?.on("data", handleData);
 }
 
 /**
@@ -59,7 +64,7 @@ function attachProgressStreamers(
 export async function executeCommand(
   command: string,
   args: string[],
-  options: CommandExecutionOptions = {}
+  options: CommandExecutionOptions = {},
 ): Promise<CommandExecutionResult> {
   const { cwd, env, shell } = options;
 
@@ -77,15 +82,16 @@ export async function executeCommand(
   const result = await subprocess;
 
   if (result.exitCode !== 0) {
-    const stdout = typeof result.stdout === 'string' ? result.stdout : '';
-    const stderr = typeof result.stderr === 'string' ? result.stderr : '';
-    const errorMessage = stderr || stdout || `Command failed with exit code ${result.exitCode}`;
+    const stdout = typeof result.stdout === "string" ? result.stdout : "";
+    const stderr = typeof result.stderr === "string" ? result.stderr : "";
+    const errorMessage =
+      stderr || stdout || `Command failed with exit code ${result.exitCode}`;
     throw new Error(errorMessage);
   }
 
   return {
-    stdout: typeof result.stdout === 'string' ? result.stdout : '',
-    stderr: typeof result.stderr === 'string' ? result.stderr : '',
+    stdout: typeof result.stdout === "string" ? result.stdout : "",
+    stderr: typeof result.stderr === "string" ? result.stderr : "",
   };
 }
 
@@ -96,7 +102,7 @@ export async function executeCommand(
 export async function exec(
   command: string,
   args: string[],
-  options: CommandExecutionOptions = {}
+  options: CommandExecutionOptions = {},
 ): Promise<CommandExecutionResult> {
   return executeCommand(command, args, options);
 }
@@ -108,7 +114,7 @@ export async function exec(
  */
 export async function execShell(
   command: string,
-  options: CommandExecutionOptions = {}
+  options: CommandExecutionOptions = {},
 ): Promise<CommandExecutionResult> {
   return executeCommand(command, [], { ...options, shell: true });
 }

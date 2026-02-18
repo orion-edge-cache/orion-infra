@@ -7,9 +7,9 @@
  * if detailed Terraform plan output is needed.
  */
 
-import { IAC_DIR } from '../config.js';
-import { DestroyConfig, ProgressCallback } from '../types.js';
-import { exec } from '../exec.js';
+import { IAC_DIR } from "../config.js";
+import { DestroyConfig, ProgressCallback } from "../types/index.js";
+import { exec } from "../exec.js";
 
 export interface DestroyPlanResult {
   planOutput: string;
@@ -18,11 +18,11 @@ export interface DestroyPlanResult {
 
 export async function planDestroyTerraform(
   config: DestroyConfig,
-  onProgress?: ProgressCallback
+  onProgress?: ProgressCallback,
 ): Promise<DestroyPlanResult> {
   onProgress?.({
-    step: 'plan',
-    message: 'Generating destroy plan...',
+    step: "plan",
+    message: "Generating destroy plan...",
     progress: 20,
   });
 
@@ -34,30 +34,34 @@ export async function planDestroyTerraform(
     FASTLY_API_TOKEN: config.fastlyApiToken,
   };
 
-  const result = await exec('terraform', [
-    'plan',
-    '-destroy',
-    '-no-color',
-    '-var=compute_backend_domain=destroy.local',
-    '-var=compute_backend_protocol=https',
-    '-var=compute_backend_port=443',
-    '-var=compute_backend_host_override=destroy.local',
-    `-var=fastly_api_key=${config.fastlyApiToken}`,
-  ], {
-    cwd: IAC_DIR,
-    env,
-    onProgress,
-    progressStep: 'plan',
-    progressPercent: 25,
-  });
+  const result = await exec(
+    "terraform",
+    [
+      "plan",
+      "-destroy",
+      "-no-color",
+      "-var=compute_backend_domain=destroy.local",
+      "-var=compute_backend_protocol=https",
+      "-var=compute_backend_port=443",
+      "-var=compute_backend_host_override=destroy.local",
+      `-var=fastly_api_key=${config.fastlyApiToken}`,
+    ],
+    {
+      cwd: IAC_DIR,
+      env,
+      onProgress,
+      progressStep: "plan",
+      progressPercent: 25,
+    },
+  );
 
   onProgress?.({
-    step: 'plan',
-    message: 'Destroy plan generated',
+    step: "plan",
+    message: "Destroy plan generated",
     progress: 30,
   });
 
-  const hasChanges = !result.stdout.includes('No changes');
+  const hasChanges = !result.stdout.includes("No changes");
 
   return {
     planOutput: result.stdout,

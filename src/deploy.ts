@@ -2,23 +2,23 @@
  * High-level deployment orchestration
  */
 
-import fs from 'fs';
-import { ORION_CONFIG_DIR, TFSTATE_PATH } from './config.js';
-import { initTerraform } from './terraform/init.js';
-import { applyTerraform } from './terraform/apply.js';
-import { getTerraformOutputs } from './terraform/outputs.js';
-import { processComputeTemplates } from './compute/templates.js';
-import { buildCompute } from './compute/build.js';
-import { deployCompute } from './compute/deploy.js';
-import { DeployConfig, ProgressCallback } from './types.js';
+import fs from "fs";
+import { ORION_CONFIG_DIR, TFSTATE_PATH } from "./config.js";
+import { initTerraform } from "./terraform/init.js";
+import { applyTerraform } from "./terraform/apply.js";
+import { getTerraformOutputs } from "./terraform/outputs.js";
+import { processComputeTemplates } from "./compute/templates.js";
+import { buildCompute } from "./compute/build.js";
+import { deployCompute } from "./compute/deploy.js";
+import { DeployConfig, ProgressCallback } from "./types/index.js";
 
 export async function deployInfrastructure(
   config: DeployConfig,
-  onProgress?: ProgressCallback
+  onProgress?: ProgressCallback,
 ): Promise<void> {
   onProgress?.({
-    step: 'start',
-    message: 'Starting deployment...',
+    step: "start",
+    message: "Starting deployment...",
     progress: 0,
   });
 
@@ -29,16 +29,16 @@ export async function deployInfrastructure(
 
   // Check if already deployed
   if (fs.existsSync(TFSTATE_PATH)) {
-    throw new Error('Infrastructure already exists. Destroy it first.');
+    throw new Error("Infrastructure already exists. Destroy it first.");
   }
 
   // Resolve Fastly token
   const fastlyToken = config.fastly.useEnv
-    ? (process.env.FASTLY_API_KEY || process.env.FASTLY_API_TOKEN || '')
-    : (config.fastly.apiToken || '');
+    ? process.env.FASTLY_API_KEY || process.env.FASTLY_API_TOKEN || ""
+    : config.fastly.apiToken || "";
 
   if (!fastlyToken) {
-    throw new Error('Fastly API token is required');
+    throw new Error("Fastly API token is required");
   }
 
   // Execute deployment steps
@@ -52,8 +52,8 @@ export async function deployInfrastructure(
   await deployCompute(fastlyToken, onProgress);
 
   onProgress?.({
-    step: 'complete',
-    message: 'Deployment complete!',
+    step: "complete",
+    message: "Deployment complete!",
     progress: 100,
   });
 }

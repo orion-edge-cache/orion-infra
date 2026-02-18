@@ -2,16 +2,16 @@
  * High-level destroy orchestration
  */
 
-import { destroyTerraform, deleteTfState } from './terraform/destroy.js';
-import { DestroyConfig, ProgressCallback } from './types.js';
+import { destroyTerraform, deleteTfState } from "./terraform/destroy.js";
+import { DestroyConfig, ProgressCallback } from "./types/index.js";
 
 export async function destroyInfrastructure(
   config: DestroyConfig,
-  onProgress?: ProgressCallback
+  onProgress?: ProgressCallback,
 ): Promise<void> {
   onProgress?.({
-    step: 'start',
-    message: 'Starting infrastructure destruction...',
+    step: "start",
+    message: "Starting infrastructure destruction...",
     progress: 0,
   });
 
@@ -19,8 +19,8 @@ export async function destroyInfrastructure(
   await deleteTfState();
 
   onProgress?.({
-    step: 'complete',
-    message: 'Infrastructure destroyed!',
+    step: "complete",
+    message: "Infrastructure destroyed!",
     progress: 100,
   });
 }
