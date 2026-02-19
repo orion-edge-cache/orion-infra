@@ -50,6 +50,7 @@ resource "fastly_service_vcl" "orion_cache" {
          "resp_body_size": %%{resp.body_bytes_written}V,
          "fastly_server": "%%{json.escape(server.identity)}V",
          "fastly_is_edge": %%{if(fastly.ff.visits_this_service == 0, "true", "false")}V,
+         "req_x_operation_type": "%%{if(req.http.X-Operation-Type, req.http.X-Operation-Type, "null")}V",
          "req_x_health_check": "%%{if(req.http.X-Health-Check, req.http.X-Health-Check, "null")}V",
          "req_x_graphql_query": "%%{if(req.http.X-GraphQL-Query, req.http.X-GraphQL-Query, "null")}V",
          "req_x_debug_cache_reason": "%%{req.http.X-Debug-Cache-Reason}V",
