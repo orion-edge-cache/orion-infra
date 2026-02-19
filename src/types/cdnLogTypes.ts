@@ -75,7 +75,10 @@ export type FastlyBaseState =
   | "ERROR"
   | "ERROR-LOSTHDR";
 // Background error states
-export type FastlyBgErrorState = "BG-ERROR-PASS" | "BG-ERROR-RECV" | "BG-ERROR-ERROR";
+export type FastlyBgErrorState =
+  | "BG-ERROR-PASS"
+  | "BG-ERROR-RECV"
+  | "BG-ERROR-ERROR";
 // Suffixes
 export type FastlySuffix = "-CLUSTER" | "-REFRESH" | "-WAIT";
 // Combined type: base state with optional suffix
@@ -100,12 +103,13 @@ export interface CdnLogDeliverData {
   resp_body_size: number;
   fastly_server: string;
   fastly_is_edge: boolean;
+  req_x_operation_type: string | "null";
   req_x_health_check: string | "null";
   req_x_graphql_query: string | "null";
   req_x_debug_cache_reason: string;
   req_body: string;
-  time_to_first_byte: string;
-  time_elapsed: string;
+  time_to_first_byte_seconds: string;
+  time_elapsed_microseconds: string;
 }
 
 // Hash and Pass have empty data objects

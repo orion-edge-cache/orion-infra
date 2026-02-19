@@ -12,12 +12,13 @@ resource "fastly_service_dynamic_snippet_content" "recv_logic" {
                     if (req.body) {
                       set req.http.X-GraphQL-Query = json.escape(req.body);
                       if (req.body ~ "mutation") {
-                        set req.http.X-Mutation = "true";
+                        set req.http.X-Operation-Type = "mutation";
                         # Keep as POST for mutations, pass through without caching
                         return(pass);
                       } else if (req.body ~ "query") {
                         # Queries: convert to GET for caching
                         set req.method = "GET";
+                        set req.http.X-Operation-Type = "query";
                         return(lookup);
                       }
                     }
