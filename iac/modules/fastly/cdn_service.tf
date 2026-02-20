@@ -33,7 +33,7 @@ resource "fastly_service_vcl" "orion_cache" {
        "request_id": "%%{if(req.http.x-request-id, req.http.x-request-id, "No Request ID")}V",
        "source": "cdn",
        "level": "info",
-       "event": "DELIVER",
+       "event": "deliver",
        "timestamp": "%%{strftime(\{"%Y-%m-%dT%H:%M:%S%z"\}, time.start)}V",
        "message": "",
        "data": {

@@ -52,6 +52,7 @@ async function handleRequest(event: FetchEvent) {
         request_id,
         source: "compute",
         event: "health check",
+        level: "debug",
         timestamp,
         message: "Health check passed",
         data: {},
@@ -67,6 +68,7 @@ async function handleRequest(event: FetchEvent) {
         request_id,
         source: "compute",
         event: "health check",
+        level: "debug",
         timestamp,
         message: "Health check failed",
         data: {},
@@ -102,7 +104,8 @@ async function handleRequest(event: FetchEvent) {
     JSON.stringify({
       request_id,
       source: "compute",
-      event: "debug",
+      event: "processing request",
+      level: "debug",
       message: `[${operationType}] Incoming request: ${request.method} ${request.url}`,
       timestamp,
       data: {
@@ -143,7 +146,8 @@ async function handleRequest(event: FetchEvent) {
     JSON.stringify({
       request_id,
       source: "compute",
-      event: "debug",
+      event: "origin request",
+      level: "debug",
       message: `Forwarding to origin: POST /graphql`,
       timestamp,
       data: {
@@ -162,7 +166,8 @@ async function handleRequest(event: FetchEvent) {
     JSON.stringify({
       request_id,
       source: "compute",
-      event: "debug",
+      event: "origin response",
+      level: "debug",
       message: `Origin response: ${response.status} ${response.statusText}`,
       timestamp,
       data: {
@@ -196,7 +201,7 @@ async function handleRequest(event: FetchEvent) {
       JSON.stringify({
         request_id,
         source: "compute",
-        event: "error",
+        event: "origin error",
         level: errorLevel,
         message: `[${response.status}] ${errorMessage}`,
         timestamp,
@@ -265,6 +270,7 @@ async function handleRequest(event: FetchEvent) {
           request_id,
           source: "compute",
           event: "purge",
+          level: "debug",
           timestamp,
           message: "Is Mutation with surrogate key",
           data: {
@@ -286,6 +292,7 @@ async function handleRequest(event: FetchEvent) {
         request_id,
         source: "compute",
         event: "cache",
+        level: "debug",
         timestamp,
         message: "Is Mutation without surrogate key",
         data: {

@@ -14,10 +14,10 @@ resource "fastly_service_dynamic_snippet_content" "recv_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "recv", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
-                  {""message": "", "} +
+                  {""message": "Incoming request", "} +
                   {""data": {"} +
                     {""cdn_version": ""} + req.vcl.version + {"", "} +
                     {""req_host": ""} + json.escape(req.http.host) + {"", "} +
@@ -51,12 +51,13 @@ resource "fastly_service_dynamic_snippet_content" "hash_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "hash", "} +
-                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"""} +
-                  {""message": "", "} +
+                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
+                  {""message": "Generateing cache key", "} +
                   {""data": {"} +
-                  {"}"};
+                    {""cdn_version": ""} + req.vcl.version + {"", "} +
+                  {"}}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
               VCL
 }
@@ -75,18 +76,19 @@ resource "fastly_service_dynamic_snippet_content" "miss_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "miss", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
-                  {""message": "", "} +
+                  {""message": "Cache miss", "} +
                   {""data": {"} +
-                    {""bereq_method": "} + bereq.method + {", "} +
-                    {""bereq_proto": "} + bereq.proto + {", "} +
-                    {""bereq_url_basename": "} + bereq.url.basename + {", "} +
-                    {""bereq_url_path": "} + bereq.url.path + {", "} +
-                    {""bereq_url_qs": "} + bereq.url.qs + {", "} +
-                    {""bereq_url": "} + bereq.url + {", "} +
-                    {""req_backend_is_origin": "} + if(req.backend.is_origin, "true", "false") + {"""} +
+                    {""cdn_version": ""} + req.vcl.version + {"", "} +
+                    {""bereq_method": ""} + bereq.method + {"", "} +
+                    {""bereq_proto": ""} + bereq.proto + {"", "} +
+                    {""bereq_url_basename": ""} + bereq.url.basename + {"", "} +
+                    {""bereq_url_path": ""} + bereq.url.path + {"", "} +
+                    {""bereq_url_qs": ""} + bereq.url.qs + {"", "} +
+                    {""bereq_url": ""} + bereq.url + {"", "} +
+                    {""req_backend_is_origin": ""} + if(req.backend.is_origin, "true", "false") + {"""} +
                   {"}}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
@@ -106,21 +108,22 @@ resource "fastly_service_dynamic_snippet_content" "hit_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "hit", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
-                  {""message": "", "} +
+                  {""message": "Cache hit", "} +
                   {""data": {"} +
-                    {""obj_age": "} + obj.age + {", "} +
-                    {""obj_cacheable": "} + if(obj.cacheable, "true", "false") + {", "} +
-                    {""obj_hits": "} + obj.hits + {", "} +
-                    {""obj_lastuse": "} + obj.lastuse + {", "} +
-                    {""obj_response": "} + obj.response + {", "} +
-                    {""obj_protocol": "} + obj.proto + {", "} +
-                    {""obj_sie": "} + obj.stale_if_error + {", "} +
-                    {""obj_swr": "} + obj.stale_while_revalidate + {", "} +
-                    {""obj_status": "} + obj.status + {", "} +
-                    {""obj_ttl": "} + obj.ttl + {"""} +
+                    {""cdn_version": ""} + req.vcl.version + {"", "} +
+                    {""obj_age": ""} + obj.age + {"", "} +
+                    {""obj_cacheable": ""} + if(obj.cacheable, "true", "false") + {"", "} +
+                    {""obj_hits": ""} + obj.hits + {"", "} +
+                    {""obj_lastuse": ""} + obj.lastuse + {"", "} +
+                    {""obj_response": ""} + obj.response + {"", "} +
+                    {""obj_protocol": ""} + obj.proto + {"", "} +
+                    {""obj_sie": ""} + obj.stale_if_error + {"", "} +
+                    {""obj_swr": ""} + obj.stale_while_revalidate + {"", "} +
+                    {""obj_status": ""} + obj.status + {"", "} +
+                    {""obj_ttl": ""} + obj.ttl + {"""} +
                   {"}}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
               VCL
@@ -140,12 +143,13 @@ resource "fastly_service_dynamic_snippet_content" "pass_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "pass", "} +
-                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"""} +
-                  {""message": "", "} +
+                  {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
+                  {""message": "Cache pass", "} +
                   {""data": {"} +
-                  {"}"};
+                    {""cdn_version": ""} + req.vcl.version + {"""} +
+                  {"}}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
 }
@@ -164,20 +168,21 @@ resource "fastly_service_dynamic_snippet_content" "fetch_logs" {
                   {"{"} +
                   {""request_id": ""} + json.escape(var.x_request_id) + {"", "} +
                   {""source": "cdn", "} +
-                  {""level": "info", "} +
+                  {""level": "debug", "} +
                   {""event": "fetch", "} +
                   {""timestamp": ""} + strftime({"%Y-%m-%dT%H:%M:%SZ"}, now) + {"", "} +
-                  {""message": "", "} +
+                  {""message": "Backend response received", "} +
                   {""data": {"} +
-                    {""beresp_response": "} + beresp.response + {", "} +
-                    {""beresp_protocol": "} + beresp.proto + {", "} +
-                    {""beresp_backend_host": "} + beresp.backend.host + {", "} +
-                    {""beresp_backend_name": "} + beresp.backend.name + {", "} +
-                    {""beresp_cacheable": "} + if(beresp.cacheable, "true", "false") + {", "} +
-                    {""beresp_sie": "} + beresp.stale_if_error + {", "} +
-                    {""beresp_swr": "} + beresp.stale_while_revalidate + {", "} +
-                    {""beresp_status": "} + beresp.status + {", "} +
-                    {""beresp_ttl": "} + beresp.ttl + {"""} +
+                    {""cdn_version": ""} + req.vcl.version + {"", "} +
+                    {""beresp_response": ""} + beresp.response + {"", "} +
+                    {""beresp_protocol": ""} + beresp.proto + {"", "} +
+                    {""beresp_backend_host": ""} + beresp.backend.host + {"", "} +
+                    {""beresp_backend_name": ""} + beresp.backend.name + {"", "} +
+                    {""beresp_cacheable": ""} + if(beresp.cacheable, "true", "false") + {"", "} +
+                    {""beresp_sie": ""} + beresp.stale_if_error + {"", "} +
+                    {""beresp_swr": ""} + beresp.stale_while_revalidate + {"", "} +
+                    {""beresp_status": ""} + beresp.status + {"", "} +
+                    {""beresp_ttl": ""} + beresp.ttl + {"""} +
                   {"}}"};
                 log {"syslog "} req.service_id {" kinesis-stream :: "} var.log_json;
                VCL
