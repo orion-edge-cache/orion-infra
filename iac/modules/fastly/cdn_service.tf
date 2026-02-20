@@ -34,6 +34,7 @@ resource "fastly_service_vcl" "orion_cache" {
        "source": "cdn",
        "level": "info",
        "event": "deliver",
+       "message": "Outgoing response",
        "timestamp": "%%{strftime(\{"%Y-%m-%dT%H:%M:%S%z"\}, time.start)}V",
        "message": "",
        "data": {
